@@ -3,7 +3,7 @@ Data searching for employees vacation days
 
 This project is about uploading and searching vacation days in one firm. The project was coded in Java with Spring Boot framework.
 
-THis is the implementation of searching through the record od vacation days for an employee microservice.
+This is the implementation of searching through the record of vacation days for an employee microservice.
 
 For this project to work properly, you must create a database in PosgreSQL named userDB. Application.properties file is set so that it connects to this database. In resources/samples you have samples of csv files that are needed to fill up the given database. All functions have comments that are explaining what are they doing.
 
