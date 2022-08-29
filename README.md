@@ -11,4 +11,8 @@ Then in order to test the project to be working properly, open Postman, and in a
 
 Tests for this project are not written but you are very welcome to write them.
 
+<<<<<<< HEAD
 That would be all.
+=======
+That would be all.
+>>>>>>> 34ae3b2b571f96f67952dd690b31b3e4da90de62
