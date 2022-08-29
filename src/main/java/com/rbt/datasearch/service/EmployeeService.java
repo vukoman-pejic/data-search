@@ -11,10 +11,13 @@ import com.rbt.datasearch.repository.EmployeeRepository;
 import com.rbt.datasearch.repository.UsedVacationDaysRepository;
 import com.rbt.datasearch.repository.VacationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -40,7 +43,9 @@ public class EmployeeService {
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found."));
     }
 
-    public EmployeeVacationResponse getEmployeeVacationInfo(String email) {
+    public EmployeeVacationResponse getEmployeeVacationInfo() {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        String email = principal.getName();
         EmployeeEntity employee = employeeRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException(""));
         return EmployeeVacationResponse.builder()
                 .vacations(employee.getVacations())
@@ -48,6 +53,8 @@ public class EmployeeService {
     }
 
     public void addUsedDaysForEmployee(EmployeeVacationUsedDaysRequest employeeVacationUsedDaysRequest) throws ParseException {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        String email = principal.getName();
         SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
         Date startDate = sdf.parse(employeeVacationUsedDaysRequest.getStartDate());
         Date endDate = sdf.parse(employeeVacationUsedDaysRequest.getEndDate());
@@ -55,7 +62,7 @@ public class EmployeeService {
         Long diffInMillies = Math.abs(endDate.getTime() - startDate.getTime());
         Long days = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
-        EmployeeEntity employeeEntity = employeeRepository.findByEmail(employeeVacationUsedDaysRequest.getEmail())
+        EmployeeEntity employeeEntity = employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found."));
 
         List<VacationEntity> vacations = employeeEntity.getVacations();
@@ -93,11 +100,13 @@ public class EmployeeService {
     }
 
     public EmployeeUsedVacationResponse getEmployeeVacationUsedPeriod(EmployeeVacationUsedForPeriodRequest employeeVacationUsedForPeriodRequest) throws ParseException {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        String email = principal.getName();
         SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
         Date startDate = sdf.parse(employeeVacationUsedForPeriodRequest.getStartDate());
         Date endDate = sdf.parse(employeeVacationUsedForPeriodRequest.getEndDate());
 
-        EmployeeEntity employeeEntity = employeeRepository.findByEmail(employeeVacationUsedForPeriodRequest.getEmail())
+        EmployeeEntity employeeEntity = employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found."));
 
         LocalDate startLocalDate = startDate.toInstant()

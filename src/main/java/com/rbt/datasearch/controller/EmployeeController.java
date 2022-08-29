@@ -21,9 +21,9 @@ import java.util.List;
 public class EmployeeController {
     private final EmployeeService employeeService;
 
-    @GetMapping("/search/{email}")
-    public ResponseEntity<EmployeeVacationResponse> getEmployeeVacationInfo(@PathVariable String email) {
-        EmployeeVacationResponse employeeVacationInfo = employeeService.getEmployeeVacationInfo(email);
+    @GetMapping("/search")
+    public ResponseEntity<EmployeeVacationResponse> getEmployeeVacationInfo() {
+        EmployeeVacationResponse employeeVacationInfo = employeeService.getEmployeeVacationInfo();
         return new ResponseEntity<>(employeeVacationInfo, HttpStatus.OK);
     }
 

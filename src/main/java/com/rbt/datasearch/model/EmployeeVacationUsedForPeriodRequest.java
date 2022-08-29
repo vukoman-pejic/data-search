@@ -6,7 +6,6 @@ import lombok.Data;
 @Builder
 @Data
 public class EmployeeVacationUsedForPeriodRequest {
-    private String email;
     private String startDate;
     private String endDate;
 }
