@@ -39,6 +39,8 @@ public class JwtSecurity {
                 .authorizeHttpRequests((auth) -> {
                     try {
                         auth
+                                .antMatchers("/api/v1/employee/user/**").hasRole("USER")
+                                .antMatchers("/api/v1/employee/admin/**").hasRole("ADMIN")
                                 .anyRequest().permitAll()
                                 .and()
                                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -62,5 +64,4 @@ public class JwtSecurity {
         filter.setAuthenticationManager(authenticationManager);
         return filter;
     }
-
 }

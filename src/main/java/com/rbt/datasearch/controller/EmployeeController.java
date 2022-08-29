@@ -16,7 +16,7 @@ import java.text.ParseException;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/employee")
+@RequestMapping("api/v1/employee/user")
 @RequiredArgsConstructor
 public class EmployeeController {
     private final EmployeeService employeeService;

@@ -28,6 +28,13 @@ public class InitEmployees implements CommandLineRunner {
 //            u.setEnabled(true);
             employeeService.save(u);
 
+        EmployeeEntity u2 = employeeService.save(EmployeeEntity.builder()
+                .email("admin1@test.com")
+                .password(passwordEncoder.encode("test123"))
+                .role(Set.of(Role.ROLE_ADMIN, Role.ROLE_USER))
+                .build());
+//            u.setEnabled(true);
+        employeeService.save(u2);
 
             EmployeeEntity u1 = employeeService.save(EmployeeEntity.builder()
                     .email("user@test.com")
