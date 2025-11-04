@@ -1,8 +1,6 @@
 package com.rbt.datasearch.service;
 
-import com.rbt.datasearch.entity.EmployeeEntity;
-import com.rbt.datasearch.entity.UsedVacationEntity;
-import com.rbt.datasearch.entity.VacationEntity;
+import com.rbt.datasearch.entity.*;
 import com.rbt.datasearch.model.EmployeeUsedVacationResponse;
 import com.rbt.datasearch.model.EmployeeVacationResponse;
 import com.rbt.datasearch.model.EmployeeVacationUsedDaysRequest;
@@ -10,6 +8,7 @@ import com.rbt.datasearch.model.EmployeeVacationUsedForPeriodRequest;
 import com.rbt.datasearch.repository.EmployeeRepository;
 import com.rbt.datasearch.repository.UsedVacationDaysRepository;
 import com.rbt.datasearch.repository.VacationRepository;
+import com.rbt.datasearch.repository.VacationRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,6 +32,7 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final UsedVacationDaysRepository usedVacationDaysRepository;
     private final VacationRepository vacationRepository;
+    private final VacationRequestRepository vacationRequestRepository;
 
     public EmployeeEntity save(EmployeeEntity employee) {
         return employeeRepository.save(employee);
@@ -98,6 +98,30 @@ public class EmployeeService {
         currentVacation.getUsedVacationEntities().add(usedVacationEntity);
         vacationRepository.save(currentVacation);
     }
+
+    public void requestVacation(EmployeeVacationUsedDaysRequest request) throws ParseException {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        String email = principal.getName();
+        EmployeeEntity employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found"));
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
+        Date startDate = sdf.parse(request.getStartDate());
+        Date endDate = sdf.parse(request.getEndDate());
+
+        VacationRequest vacationRequest = VacationRequest.builder()
+                .employee(employee)
+                .department(employee.getDepartment())
+                .startDate(startDate)
+                .endDate(endDate)
+                .year(request.getYear())
+                .status(RequestStatus.PENDING)
+                .reason(request.getReason())
+                .build();
+
+        vacationRequestRepository.save(vacationRequest);
+    }
+
 
     public EmployeeUsedVacationResponse getEmployeeVacationUsedPeriod(EmployeeVacationUsedForPeriodRequest employeeVacationUsedForPeriodRequest) throws ParseException {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();

@@ -38,4 +38,10 @@ public class EmployeeController {
         EmployeeUsedVacationResponse employeeUsedVacationResponse = employeeService.getEmployeeVacationUsedPeriod(employeeVacationUsedForPeriodRequest);
         return new ResponseEntity<>(employeeUsedVacationResponse, HttpStatus.OK);
     }
+
+    @PostMapping("/request-vacation")
+    public ResponseEntity<?> requestVacation(@RequestBody EmployeeVacationUsedDaysRequest request) throws ParseException {
+        employeeService.requestVacation(request);
+        return ResponseEntity.ok("Vacation request submitted.");
+    }
 }
